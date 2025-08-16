@@ -1,0 +1,9 @@
+python>=3.9
+streamlit
+opencv-python
+ultralytics
+deep-sort-realtime
+numpy
+pandas
+
+
