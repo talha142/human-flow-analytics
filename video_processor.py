@@ -7,10 +7,20 @@ import math
 import os
 
 class VideoProcessor:
-    def __init__(self, model_path="yolov8n.pt", resize_width=None):
+    def __init__(self, model_path="yolov8n.pt", resize_width=None, roi=None, conf_threshold=0.6):
         self.model = YOLO(model_path)
-        self.tracker = DeepSort(max_age=30)
+        self.tracker = DeepSort(max_age=30, n_init=3, nn_budget=150, max_cosine_distance=0.4)
         self.resize_width = resize_width
+        self.roi = roi  # ROI = (x1, y1, x2, y2) rectangle
+        self.conf_threshold = conf_threshold
+
+    def _is_inside_roi(self, x1, y1, x2, y2):
+        """Check if bounding box is inside ROI"""
+        if self.roi is None:
+            return True
+        rx1, ry1, rx2, ry2 = self.roi
+        cx, cy = (x1 + x2) // 2, (y1 + y2) // 2
+        return (rx1 <= cx <= rx2) and (ry1 <= cy <= ry2)
 
     def process_video(self, input_path, output_video_path, output_csv_path, speed_mode="High Accuracy", progress_callback=None):
         start_time = time.time()
@@ -53,32 +63,47 @@ class VideoProcessor:
             if self.resize_width:
                 frame = cv2.resize(frame, (width, height))
 
-            # YOLO detection and DeepSORT tracking
-            results = self.model.track(frame, conf=0.5, persist=True)
-            people_count = 0
-            current_minute = math.floor(frame_idx / (fps * 60))
+            # YOLO detection
+            results = self.model(frame, conf=self.conf_threshold)
+            people_dets = []
 
             if len(results) > 0:
                 r = results[0]
                 boxes = getattr(r, "boxes", None)
-                ids = getattr(r.boxes, "id", None) if boxes else None
-
                 if boxes is not None:
-                    for i, box in enumerate(boxes):
+                    for box in boxes:
                         cls_id = int(box.cls[0])
-                        if cls_id == 0:  # Person class
-                            people_count += 1
-                            if ids is not None:
-                                if current_minute not in unique_ids_per_minute:
-                                    unique_ids_per_minute[current_minute] = set()
-                                unique_ids_per_minute[current_minute].add(int(ids[i]))
-
-                            # Draw bounding box
+                        conf = float(box.conf[0])
+                        if cls_id == 0 and conf >= self.conf_threshold:  # person class
                             xyxy = box.xyxy[0].tolist()
                             x1, y1, x2, y2 = map(int, xyxy[:4])
-                            cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
-                            cv2.putText(frame, "Person", (x1, max(15, y1-6)),
-                                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
+
+                            if self._is_inside_roi(x1, y1, x2, y2):
+                                people_dets.append(([x1, y1, x2 - x1, y2 - y1], conf, "person"))
+
+            # DeepSORT tracking
+            tracks = self.tracker.update_tracks(people_dets, frame=frame)
+            people_count = 0
+            current_minute = math.floor(frame_idx / (fps * 60))
+
+            if len(tracks) > 0:
+                for track in tracks:
+                    if not track.is_confirmed():
+                        continue
+                    track_id = track.track_id
+                    ltrb = track.to_ltrb()
+                    x1, y1, x2, y2 = map(int, ltrb)
+
+                    people_count += 1
+
+                    if current_minute not in unique_ids_per_minute:
+                        unique_ids_per_minute[current_minute] = set()
+                    unique_ids_per_minute[current_minute].add(track_id)
+
+                    # Draw bounding box and ID
+                    cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
+                    cv2.putText(frame, f"ID {track_id}", (x1, max(15, y1 - 6)),
+                                cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
 
             # Save per-frame log
             log_data.append([
