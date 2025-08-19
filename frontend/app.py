@@ -28,7 +28,6 @@ if uploaded_file:
     st.video(video_path)  # Preview uploaded video
 
     # === Initialize Session State ===
-    # Using session_state to persist output paths and processing time
     if "out_video" not in st.session_state:
         st.session_state["out_video"] = None
     if "out_csv" not in st.session_state:
@@ -38,7 +37,6 @@ if uploaded_file:
 
     # === Video Processing Button ===
     if st.button("Start Processing (High Accuracy)"):
-        # Define paths for processed video and CSV log
         output_video_path = os.path.join(OUTPUT_FOLDER, f"processed_{uploaded_file.name}")
         output_csv_path = os.path.join(OUTPUT_FOLDER, f"log_{os.path.splitext(uploaded_file.name)[0]}.csv")
 
@@ -53,14 +51,12 @@ if uploaded_file:
             progress_text.text(f"Processing: {percent}%")
 
         # === Process Video ===
-        # Process the video and get output paths and processing time
         out_video, out_csv, proc_time = processor.process_video(
             video_path, output_video_path, output_csv_path,
             speed_mode="High Accuracy",
             progress_callback=progress_callback
         )
 
-        # === Save results to session_state ===
         st.session_state["out_video"] = out_video
         st.session_state["out_csv"] = out_csv
         st.session_state["proc_time"] = proc_time
@@ -69,20 +65,39 @@ if uploaded_file:
         progress_text.text(f"✅ Processing complete in {proc_time} sec")
         st.video(out_video)  # Show processed video
 
-    # === Analytics & Line Chart ===
-    # Display unique people detected per minute
+    # === Analytics & Chart with Toggle (UPDATED) ===
     if st.session_state.get("out_csv") and os.path.exists(st.session_state["out_csv"]):
         df = pd.read_csv(st.session_state["out_csv"])
         st.subheader("Unique People Detected Per Minute")
 
-        fig, ax = plt.subplots()
-        ax.plot(df["Minute"], df["Unique_People_Count"], marker="o")  # Line chart
-        ax.set_xlabel("Minute")
-        ax.set_ylabel("Unique People Count")
-        st.pyplot(fig)  # Render chart in Streamlit
+        if "Minute" in df.columns and "Unique_People_Count" in df.columns:
+            chart_type = st.radio("Select Chart Type", ["Line Chart", "Bar Chart"])
+
+            fig, ax = plt.subplots(figsize=(8, 5))
+            x = df["Minute"].astype(int)  # ensure integer minutes
+            y = df["Unique_People_Count"]
+
+            if chart_type == "Line Chart":
+                ax.plot(x, y, marker="o", linestyle='-', color='blue')
+                for i, val in enumerate(y):
+                    ax.text(x.iloc[i], val + 0.1, str(val), ha='center', va='bottom')
+            else:  # Bar Chart
+                bars = ax.bar(x, y, color='skyblue')
+                for bar in bars:
+                    height = bar.get_height()
+                    ax.text(bar.get_x() + bar.get_width()/2, height + 0.1, str(int(height)),
+                            ha='center', va='bottom')
+
+            ax.set_xlabel("Minute")
+            ax.set_ylabel("Unique People Count")
+            ax.set_xticks(sorted(x.unique()))  # Only exact integer minutes
+            ax.grid(True, linestyle='--', alpha=0.5)
+            st.pyplot(fig)
+            plt.close(fig)
+        else:
+            st.warning("CSV columns not found. Ensure 'Minute' and 'Unique_People_Count' columns exist.")
 
     # === Download Buttons ===
-    # Button to download processed video
     if st.session_state.get("out_video") and os.path.exists(st.session_state["out_video"]):
         with open(st.session_state["out_video"], "rb") as f:
             st.download_button(
@@ -92,7 +107,6 @@ if uploaded_file:
                 mime="video/mp4"
             )
 
-    # Button to download CSV analytics
     if st.session_state.get("out_csv") and os.path.exists(st.session_state["out_csv"]):
         with open(st.session_state["out_csv"], "rb") as f:
             st.download_button(
@@ -101,4 +115,3 @@ if uploaded_file:
                 file_name=os.path.basename(st.session_state["out_csv"]),
                 mime="text/csv"
             )
-
