@@ -1,0 +1,10 @@
+# Ignore output and upload folders
+outputs/
+uploads/
+
+# (Optional) Ignore system clutter
+__pycache__/
+.DS_Store
+*.log
+*.venv
+*.tmp
