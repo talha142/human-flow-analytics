@@ -18,9 +18,7 @@ It also generates visual analytics, processed video output, and downloadable CSV
 - 📊 Real-time analytics dashboard with charts  
 - 📂 Download processed video with bounding boxes and IDs  
 - 📑 Export CSV log containing:
-  - Frame number  
   - Minute  
-  - People count  
   - Unique people count  
 - 🧠 **Memory optimization** with batch processing
 - 🎛️ **Flexible model selection** (nano to extra-large models)
