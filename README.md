@@ -51,20 +51,7 @@ It also generates visual analytics, processed video output, and downloadable CSV
    pip install -r requirements.txt
    ```
 
-4. **Download YOLO models (optional)**
-   ```bash
-   # Download specific model
-   python utils/model_manager.py download --model yolo11n
-   
-   # Download all supported models
-   python utils/model_manager.py download --all
-   
-   # List available models
-   python utils/model_manager.py list
-   
-   # Organize any misplaced models
-   python organize_models.py
-   ```
+
 Usage Instructions
 
 Launch the Streamlit app:
