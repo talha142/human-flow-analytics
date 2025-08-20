@@ -109,7 +109,7 @@ python utils/model_manager.py list-custom
 
 # Quick organize script
 python organize_models.py
-
+```
 ## 🛠️ Technology Stack
 
 - **Programming Language**: Python 3.8+
