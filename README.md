@@ -54,12 +54,9 @@ Usage Instructions
 
 Launch the Streamlit app:
 
-python main.py
-```
 
-Or run Streamlit directly:
-```bash
-streamlit run frontend/app.py
+```
+streamlit run main.py
 ```
 
 ### 🎛️ Configuration Options
