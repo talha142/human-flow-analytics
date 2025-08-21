@@ -1,4 +1,9 @@
-#!/usr/bin/env python3
+# Author: Muneeb Ahmad | mpysolutions.com | fiverr.com/muneeb_ahmad_ch | github.com/Muneeb-Ahmad-Ch 
+# © 2025 MPY Solutions. Developed by Muneeb Ahmad & Team. All rights reserved.
+# Unauthorized use, distribution, or reproduction of this code is strictly prohibited and not permitted.
+# The developer assumes no responsibility for any damages or losses that may result from the use of this code.
+# Do not use this code for illegal or unethical activities.
+# ==============================================================================
 """
 Model Management Utility for Human Flow Tracking
 Helps download, manage, and validate YOLO models
