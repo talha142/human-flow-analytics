@@ -224,54 +224,6 @@ def validate_environment():
     
     return True
 
-
-# def create_sample_config():
-#     """Create a sample configuration file for reference"""
-#     config_content = """# Human Flow Tracking Configuration
-# # This file shows available configuration options
-
-# # Processing modes
-# MODES:
-#   fast:
-#     detection_interval: 8    # Process every 8th frame
-#     confidence: 0.55        # Detection confidence threshold
-#     max_age: 30            # Tracker max age
-#     n_init: 2              # Frames to confirm track
-  
-#   balanced:
-#     detection_interval: 5
-#     confidence: 0.50
-#     max_age: 50
-#     n_init: 3
-  
-#   accurate:
-#     detection_interval: 3
-#     confidence: 0.45
-#     max_age: 70
-#     n_init: 3
-
-# # Model settings
-# MODEL_PATH: "models/yolo11n.pt"
-# RESIZE_WIDTH: 640  # null for original size
-
-# # Device settings (auto-detected by default)
-# # DEVICE: "cuda:0"  # or "mps", "cpu", null for auto
-
-# # Output settings
-# OUTPUT_VIDEO_CODEC: "mp4v"
-# DRAW_TRACKS: true
-# DRAW_CONFIDENCE: false
-# """
-    
-#     config_path = Path("config_sample.yaml")
-#     if not config_path.exists():
-#         try:
-#             config_path.write_text(config_content)
-#             print(f"✓ Created sample config: {config_path}")
-#         except Exception as e:
-#             print(f"⚠ Could not create sample config: {e}")
-
-
 def main():
     """Main entry point"""
     print("🚀 Human Flow Tracking & Analytics")
