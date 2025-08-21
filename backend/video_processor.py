@@ -1,3 +1,10 @@
+# Author: Muneeb Ahmad | mpysolutions.com | fiverr.com/muneeb_ahmad_ch | github.com/Muneeb-Ahmad-Ch 
+# All rights reserved by MUNEEB AHMAD (mpysolutions.com) 
+# Unauthorized use, distribution, or reproduction of this code is strictly prohibited and not permitted.
+# The developer assumes no responsibility for any damages or losses that may result from the use of this code.
+# Do not use this code for illegal or unethical activities.
+# ==============================================================================
+
 import cv2
 import pandas as pd
 import time
