@@ -1,9 +1,5 @@
-# Author: Muneeb Ahmad | mpysolutions.com | fiverr.com/muneeb_ahmad_ch | github.com/Muneeb-Ahmad-Ch 
-# © 2025 MPY Solutions. Developed by Muneeb Ahmad & Team. All rights reserved.
-# Unauthorized use, distribution, or reproduction of this code is strictly prohibited and not permitted.
-# The developer assumes no responsibility for any damages or losses that may result from the use of this code.
-# Do not use this code for illegal or unethical activities.
-# ==============================================================================
+# frontend/app.py
+
 import sys
 import os
 from pathlib import Path
@@ -11,6 +7,7 @@ import datetime as dt
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
+from utils.resource_optimizer import ResourceOptimizer
 
 # Add parent directory to sys.path to import backend modules
 backend_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'backend'))
@@ -66,6 +63,31 @@ def streamlit_main(uploaded_folder="uploads", output_folder="outputs"):
     )
     
     st.title("👥 Human Flow Tracking & Analytics")
+    # --- Footer Section ---
+    with st.expander("ℹ️ About / Legal Notice", expanded=False):
+        st.markdown("""
+        #### 📌 About This Application
+        **Project:** Human Flow Tracking & Analytics  
+        **Developed by:** Muneeb Ahmad & MPY Solutions Team  
+        **Company:** [MPY Solutions](https://mpysolutions.com)  
+        **Contact:** info@mpysolutions.com  
+
+        ---
+        © 2025 MPY Solutions. All rights reserved.  
+
+        **Notice:**  
+        This software and its source code are the intellectual property of MPY Solutions.  
+        Unauthorized use, modification, distribution, or reverse engineering is strictly prohibited.  
+
+        **Special License Exception:**  
+        Sebastián is granted the right to use this software for **personal** and **company purposes** without restriction.  
+
+        **Disclaimer:**  
+        This software is provided *“AS IS”* without any warranties.  
+        MPY Solutions and its developers assume no liability for damages, 
+        losses, or misuse of this software.  
+        Use responsibly and only for lawful purposes.  
+        """)
     st.markdown("Upload a video to track and count unique people per minute.")
     
     # Add session management
@@ -184,7 +206,7 @@ def streamlit_main(uploaded_folder="uploads", output_folder="outputs"):
         elif "large" in selected_model.lower():
             st.sidebar.info("🎯 High accuracy, slower processing")
         
-        st.sidebar.info(f"📂 Type: Built-in YOLO Model")
+        st.sidebar.info("📂 Type: Built-in YOLO Model")
     
     # Show model status in main area
     if selected_model and selected_model != "custom_upload":
@@ -348,7 +370,7 @@ def streamlit_main(uploaded_folder="uploads", output_folder="outputs"):
             # Show estimated optimal settings
             try:
                 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'utils'))
-                from resource_optimizer import ResourceOptimizer
+                
                 optimizer = ResourceOptimizer(target_utilization=0.9)
                 optimal_settings = optimizer.get_optimal_settings()
                 
@@ -379,6 +401,9 @@ def streamlit_main(uploaded_folder="uploads", output_folder="outputs"):
         type=["mp4", "avi", "mov", "mkv", "wmv"],
         help="Supported formats: MP4, AVI, MOV, MKV, WMV"
     )
+    
+
+
     
     if not uploaded_file:
         st.info("👆 Upload a video file to begin tracking people")
@@ -429,7 +454,7 @@ def streamlit_main(uploaded_folder="uploads", output_folder="outputs"):
     st.success(f"✅ Uploaded: {uploaded_file.name}")
     
     # Display video info
-    col1, col2 = st.columns([2, 1])
+    col1, col2 = st.columns([6, 1])
     with col1:
         try:
             st.video(str(input_path))
@@ -509,7 +534,11 @@ def streamlit_main(uploaded_folder="uploads", output_folder="outputs"):
             model_info_text = f" with {custom_models[selected_model].name}"
     elif selected_model != "custom_upload":
         model_info_text = f" with {selected_model.upper()}"
-    
+
+    # Ensure progress_bar and status_text are always defined
+    progress_bar = None
+    status_text = None
+
     if st.button(f"▶️ Start Processing ({speed_mode}){model_info_text}", type="primary", use_container_width=True):
         
         try:
@@ -609,16 +638,14 @@ def streamlit_main(uploaded_folder="uploads", output_folder="outputs"):
             # Final UI updates
             progress_bar.progress(1.0)
             status_text.text(f"✅ Processing completed in {processing_time:.1f} seconds")
-            
-            # Show completion message
-            st.success(f"🎉 Video processing completed successfully in {processing_time:.1f} seconds!")
-            
         except Exception as e:
             # Reset progress UI on error
             try:
-                progress_bar.progress(0)
-                status_text.text("❌ Processing failed")
-            except:
+                if progress_bar is not None:
+                    progress_bar.progress(0)
+                if status_text is not None:
+                    status_text.text("❌ Processing failed")
+            except Exception:
                 pass  # Ignore UI update errors
             
             st.error(f"❌ Processing failed: {str(e)}")
@@ -634,6 +661,7 @@ def streamlit_main(uploaded_folder="uploads", output_folder="outputs"):
             
             st.exception(e)
             return
+                
 
     # Results section
     results = st.session_state.processing_results
@@ -792,6 +820,8 @@ def streamlit_main(uploaded_folder="uploads", output_folder="outputs"):
                     st.error(f"Failed to prepare CSV download: {e}")
             else:
                 st.error("❌ CSV file not available for download")
+        
+       
                 
     elif results:
         # Clear invalid results and show message
