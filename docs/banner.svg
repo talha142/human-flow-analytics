@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 300" width="1200" height="300" role="img" aria-label="Human Flow Analytics: Detect, track and count unique people per minute in video">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1a1033"/>
+      <stop offset="1" stop-color="#3b1c6e"/>
+    </linearGradient>
+    <linearGradient id="chip" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.16"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0.06"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="300" rx="18" fill="url(#bg)"/>
+  <g stroke="#ffffff" stroke-opacity="0.05" stroke-width="1">
+    <path d="M0 60H1200M0 120H1200M0 180H1200M0 240H1200"/>
+    <path d="M200 0V300M400 0V300M600 0V300M800 0V300M1000 0V300"/>
+  </g>
+  <text x="60" y="98" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="58" font-weight="700" fill="#ffffff">Human Flow Analytics</text>
+  <text x="62" y="140" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="22" fill="#d1b8ff">Detect, track and count unique people per minute in video</text>
+  <g font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="18" font-weight="600" fill="#ffffff" text-anchor="middle">
+    <rect x="45" y="190" width="190" height="56" rx="28" fill="url(#chip)" stroke="#b388ff" stroke-opacity="0.7"/>
+    <text x="140" y="225">Upload video</text>
+    <rect x="275" y="190" width="190" height="56" rx="28" fill="url(#chip)" stroke="#b388ff" stroke-opacity="0.7"/>
+    <text x="370" y="225">Detect people</text>
+    <rect x="505" y="190" width="190" height="56" rx="28" fill="url(#chip)" stroke="#b388ff" stroke-opacity="0.7"/>
+    <text x="600" y="225">Track IDs</text>
+    <rect x="735" y="190" width="190" height="56" rx="28" fill="url(#chip)" stroke="#b388ff" stroke-opacity="0.7"/>
+    <text x="830" y="225">Count / minute</text>
+    <rect x="965" y="190" width="190" height="56" rx="28" fill="url(#chip)" stroke="#b388ff" stroke-opacity="0.7"/>
+    <text x="1060" y="225">Chart + CSV</text>
+  </g>
+  <g fill="none" stroke="#b388ff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M246 218H264M258 211l7 7-7 7"/>
+    <path d="M476 218H494M488 211l7 7-7 7"/>
+    <path d="M706 218H724M718 211l7 7-7 7"/>
+    <path d="M936 218H954M948 211l7 7-7 7"/>
+  </g>
+</svg>
