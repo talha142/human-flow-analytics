@@ -1,0 +1,10 @@
+venv/
+.venv/
+__pycache__/
+*.pyc
+
+# runtime folders (user videos and results)
+uploads/
+outputs/
+
+.DS_Store
